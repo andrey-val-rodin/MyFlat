@@ -1,6 +1,6 @@
 ﻿using MyFlat;
 
-namespace Tests
+namespace Tests.Services
 {
     class MessengerStub : IMessenger
     {

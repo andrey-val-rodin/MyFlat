@@ -23,10 +23,27 @@ namespace Tests.Services
         }
 
         [Fact]
-        public async Task Logoff_NotAuthorized_Exception()
+        public async Task LogoffAsync_CorrectCredentials_True()
+        {
+            var service = new MosOblEircService(new MessengerStub());
+            await service.AuthorizeAsync(Config.MosOblEircUser, Config.MosOblEircPassword);
+            Assert.True(await service.LogoffAsync());
+        }
+
+        [Fact]
+        public async Task LogoffAsync_NotAuthorized_Exception()
         {
             var service = new MosOblEircService(new MessengerStub());
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.LogoffAsync());
+        }
+
+        [Fact]
+        public async Task GetBalanceAsync_Success()
+        {
+            var service = new MosOblEircService(new MessengerStub());
+            await service.AuthorizeAsync(Config.MosOblEircUser, Config.MosOblEircPassword);
+            Assert.NotNull(await service.GetBalanceAsync());
+            await service.LogoffAsync();
         }
     }
 }
