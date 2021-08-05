@@ -5,13 +5,13 @@ using Xunit;
 
 namespace Tests.Common
 {
-    public class CounterChildDtoExtensionsTests
+    public class MeterChildDtoExtensionsTests
     {
         [Fact]
         public void GetDate_CorrectValue_ValidResult()
         {
             var expected = new DateTime(2021, 7, 22, 21, 13, 6);
-            var actual = new CounterChildDto
+            var actual = new MeterChildDto
             { Dt_last_indication = "2021-07-22 21:13:06.0" }.GetDate();
 
             Assert.Equal(expected, actual);
@@ -21,7 +21,7 @@ namespace Tests.Common
         public void GetDate_InvalidValue_ValidResult()
         {
             Assert.Throws<FormatException>(() =>
-                new CounterChildDto { Dt_last_indication = "2021-07-22 21:13" }.GetDate());
+                new MeterChildDto { Dt_last_indication = "2021-07-22 21:13" }.GetDate());
         }
     }
 }

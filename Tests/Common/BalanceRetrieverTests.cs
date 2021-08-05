@@ -1,6 +1,4 @@
 using MyFlat.Common;
-using MyFlat.Dto;
-using System;
 using Xunit;
 
 namespace Tests.Common

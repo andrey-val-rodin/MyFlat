@@ -1,5 +1,4 @@
-﻿using MyFlat.Dto;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MyFlat.Dto
 {

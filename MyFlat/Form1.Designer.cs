@@ -29,6 +29,7 @@ namespace MyFlat
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBoxMosOblEirc = new System.Windows.Forms.GroupBox();
             this.linkLabelMosOblEirc = new System.Windows.Forms.LinkLabel();
             this.labelMosOblEircCount = new System.Windows.Forms.Label();
@@ -41,7 +42,7 @@ namespace MyFlat
             this.labelBathroomColdWaterOld = new System.Windows.Forms.Label();
             this.labelKitchenHotWaterOld = new System.Windows.Forms.Label();
             this.labelKitchenColdWaterOld = new System.Windows.Forms.Label();
-            this.buttonCounters = new System.Windows.Forms.Button();
+            this.buttonMeters = new System.Windows.Forms.Button();
             this.textBoxElectricity = new System.Windows.Forms.TextBox();
             this.textBoxBathroomHotWater = new System.Windows.Forms.TextBox();
             this.textBoxBathroomColdWater = new System.Windows.Forms.TextBox();
@@ -53,9 +54,11 @@ namespace MyFlat
             this.labelKitchenHotWater = new System.Windows.Forms.Label();
             this.labelKitchenColdWater = new System.Windows.Forms.Label();
             this.labelMessage = new System.Windows.Forms.Label();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBoxMosOblEirc.SuspendLayout();
             this.groupBoxGlobus.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBoxMosOblEirc
@@ -129,7 +132,7 @@ namespace MyFlat
             this.groupBox1.Controls.Add(this.labelBathroomColdWaterOld);
             this.groupBox1.Controls.Add(this.labelKitchenHotWaterOld);
             this.groupBox1.Controls.Add(this.labelKitchenColdWaterOld);
-            this.groupBox1.Controls.Add(this.buttonCounters);
+            this.groupBox1.Controls.Add(this.buttonMeters);
             this.groupBox1.Controls.Add(this.textBoxElectricity);
             this.groupBox1.Controls.Add(this.textBoxBathroomHotWater);
             this.groupBox1.Controls.Add(this.textBoxBathroomColdWater);
@@ -150,57 +153,53 @@ namespace MyFlat
             // labelElectricityOld
             // 
             this.labelElectricityOld.AutoSize = true;
-            this.labelElectricityOld.Location = new System.Drawing.Point(291, 175);
+            this.labelElectricityOld.Location = new System.Drawing.Point(302, 175);
             this.labelElectricityOld.Name = "labelElectricityOld";
-            this.labelElectricityOld.Size = new System.Drawing.Size(41, 20);
+            this.labelElectricityOld.Size = new System.Drawing.Size(0, 20);
             this.labelElectricityOld.TabIndex = 15;
-            this.labelElectricityOld.Text = "9400";
             // 
             // labelBathroomHotWaterOld
             // 
             this.labelBathroomHotWaterOld.AutoSize = true;
-            this.labelBathroomHotWaterOld.Location = new System.Drawing.Point(291, 141);
+            this.labelBathroomHotWaterOld.Location = new System.Drawing.Point(302, 141);
             this.labelBathroomHotWaterOld.Name = "labelBathroomHotWaterOld";
-            this.labelBathroomHotWaterOld.Size = new System.Drawing.Size(25, 20);
+            this.labelBathroomHotWaterOld.Size = new System.Drawing.Size(0, 20);
             this.labelBathroomHotWaterOld.TabIndex = 14;
-            this.labelBathroomHotWaterOld.Text = "62";
             // 
             // labelBathroomColdWaterOld
             // 
             this.labelBathroomColdWaterOld.AutoSize = true;
-            this.labelBathroomColdWaterOld.Location = new System.Drawing.Point(291, 107);
+            this.labelBathroomColdWaterOld.Location = new System.Drawing.Point(302, 107);
             this.labelBathroomColdWaterOld.Name = "labelBathroomColdWaterOld";
-            this.labelBathroomColdWaterOld.Size = new System.Drawing.Size(25, 20);
+            this.labelBathroomColdWaterOld.Size = new System.Drawing.Size(0, 20);
             this.labelBathroomColdWaterOld.TabIndex = 13;
-            this.labelBathroomColdWaterOld.Text = "67";
             // 
             // labelKitchenHotWaterOld
             // 
             this.labelKitchenHotWaterOld.AutoSize = true;
-            this.labelKitchenHotWaterOld.Location = new System.Drawing.Point(291, 72);
+            this.labelKitchenHotWaterOld.Location = new System.Drawing.Point(302, 72);
             this.labelKitchenHotWaterOld.Name = "labelKitchenHotWaterOld";
-            this.labelKitchenHotWaterOld.Size = new System.Drawing.Size(25, 20);
+            this.labelKitchenHotWaterOld.Size = new System.Drawing.Size(0, 20);
             this.labelKitchenHotWaterOld.TabIndex = 12;
-            this.labelKitchenHotWaterOld.Text = "44";
             // 
             // labelKitchenColdWaterOld
             // 
             this.labelKitchenColdWaterOld.AutoSize = true;
-            this.labelKitchenColdWaterOld.Location = new System.Drawing.Point(291, 38);
+            this.labelKitchenColdWaterOld.Location = new System.Drawing.Point(302, 38);
             this.labelKitchenColdWaterOld.Name = "labelKitchenColdWaterOld";
-            this.labelKitchenColdWaterOld.Size = new System.Drawing.Size(25, 20);
+            this.labelKitchenColdWaterOld.Size = new System.Drawing.Size(0, 20);
             this.labelKitchenColdWaterOld.TabIndex = 11;
-            this.labelKitchenColdWaterOld.Text = "56";
             // 
-            // buttonCounters
+            // buttonMeters
             // 
-            this.buttonCounters.Enabled = false;
-            this.buttonCounters.Location = new System.Drawing.Point(512, 170);
-            this.buttonCounters.Name = "buttonCounters";
-            this.buttonCounters.Size = new System.Drawing.Size(94, 29);
-            this.buttonCounters.TabIndex = 10;
-            this.buttonCounters.Text = "Передать";
-            this.buttonCounters.UseVisualStyleBackColor = true;
+            this.buttonMeters.Enabled = false;
+            this.buttonMeters.Location = new System.Drawing.Point(512, 170);
+            this.buttonMeters.Name = "buttonMeters";
+            this.buttonMeters.Size = new System.Drawing.Size(94, 29);
+            this.buttonMeters.TabIndex = 10;
+            this.buttonMeters.Text = "Передать";
+            this.buttonMeters.UseVisualStyleBackColor = true;
+            this.buttonMeters.Click += new System.EventHandler(this.buttonMeters_Click);
             // 
             // textBoxElectricity
             // 
@@ -209,6 +208,7 @@ namespace MyFlat
             this.textBoxElectricity.Name = "textBoxElectricity";
             this.textBoxElectricity.Size = new System.Drawing.Size(125, 27);
             this.textBoxElectricity.TabIndex = 9;
+            this.textBoxElectricity.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxElectricity_Validating);
             // 
             // textBoxBathroomHotWater
             // 
@@ -217,6 +217,7 @@ namespace MyFlat
             this.textBoxBathroomHotWater.Name = "textBoxBathroomHotWater";
             this.textBoxBathroomHotWater.Size = new System.Drawing.Size(125, 27);
             this.textBoxBathroomHotWater.TabIndex = 8;
+            this.textBoxBathroomHotWater.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxBathroomHotWater_Validating);
             // 
             // textBoxBathroomColdWater
             // 
@@ -225,6 +226,7 @@ namespace MyFlat
             this.textBoxBathroomColdWater.Name = "textBoxBathroomColdWater";
             this.textBoxBathroomColdWater.Size = new System.Drawing.Size(125, 27);
             this.textBoxBathroomColdWater.TabIndex = 7;
+            this.textBoxBathroomColdWater.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxBathroomColdWater_Validating);
             // 
             // textBoxKitchenHotWater
             // 
@@ -233,6 +235,7 @@ namespace MyFlat
             this.textBoxKitchenHotWater.Name = "textBoxKitchenHotWater";
             this.textBoxKitchenHotWater.Size = new System.Drawing.Size(125, 27);
             this.textBoxKitchenHotWater.TabIndex = 6;
+            this.textBoxKitchenHotWater.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxKitchenHotWater_Validating);
             // 
             // textBoxKitchenColdWater
             // 
@@ -241,6 +244,7 @@ namespace MyFlat
             this.textBoxKitchenColdWater.Name = "textBoxKitchenColdWater";
             this.textBoxKitchenColdWater.Size = new System.Drawing.Size(125, 27);
             this.textBoxKitchenColdWater.TabIndex = 5;
+            this.textBoxKitchenColdWater.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxKitchenColdWater_Validating);
             // 
             // labelElectricity
             // 
@@ -297,6 +301,10 @@ namespace MyFlat
             this.labelMessage.Text = "Сообщение об ошибке";
             this.labelMessage.Visible = false;
             // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -308,6 +316,7 @@ namespace MyFlat
             this.Controls.Add(this.groupBoxMosOblEirc);
             this.Name = "Form1";
             this.Text = "Моя квартира";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBoxMosOblEirc.ResumeLayout(false);
             this.groupBoxMosOblEirc.PerformLayout();
@@ -315,6 +324,7 @@ namespace MyFlat
             this.groupBoxGlobus.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -329,7 +339,7 @@ namespace MyFlat
         private System.Windows.Forms.Label labelBathroomColdWater;
         private System.Windows.Forms.Label labelKitchenHotWater;
         private System.Windows.Forms.Label labelKitchenColdWater;
-        private System.Windows.Forms.Button buttonCounters;
+        private System.Windows.Forms.Button buttonMeters;
         private System.Windows.Forms.TextBox textBoxElectricity;
         private System.Windows.Forms.TextBox textBoxBathroomHotWater;
         private System.Windows.Forms.TextBox textBoxBathroomColdWater;
@@ -345,6 +355,7 @@ namespace MyFlat
         private System.Windows.Forms.Label labelBathroomColdWaterOld;
         private System.Windows.Forms.Label labelKitchenHotWaterOld;
         private System.Windows.Forms.Label labelKitchenColdWaterOld;
+        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }
 

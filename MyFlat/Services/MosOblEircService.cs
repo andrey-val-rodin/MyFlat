@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -174,7 +173,7 @@ namespace MyFlat.Services
                 child.Sm_insurance - child.Sm_balance);
         }
 
-        public async Task<IList<CounterChildDto>> GetCountersAsync()
+        public async Task<IList<MeterChildDto>> GetMetersAsync()
         {
             if (!IsAuthorized)
                 throw new InvalidOperationException();
@@ -192,7 +191,7 @@ namespace MyFlat.Services
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<CounterDto>(content);
+            var result = JsonConvert.DeserializeObject<MeterDto>(content);
             if (result?.Data.Count == 0)
             {
                 _messenger.ShowError("Ошибка при попытке получить показания счётчиков личного кабинета");
@@ -200,6 +199,36 @@ namespace MyFlat.Services
             }
 
             return result.Data;
+        }
+
+        public async Task<bool> SendMeterAsync(int meterId, int value)
+        {
+            if (!IsAuthorized)
+                throw new InvalidOperationException();
+
+            var date = HttpUtility.UrlEncode(DateTime.Now.ToString("o"));
+            var request = CreateRequest(
+               new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=AbonentSaveIndication&session={_sessionId}"),
+               $"dt_indication={date}&id_counter={meterId}&id_counter_zn=1&id_source=15418&plugin=propagateMoeInd&pr_skip_anomaly=0&pr_skip_err=0&vl_indication={value}&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
+               "https://my.mosenergosbyt.ru/accounts/6088092/transfer-indications");
+
+            var response = await SendAsync(request);
+            if (response?.StatusCode != HttpStatusCode.OK)
+            {
+                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                return false;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<AuthorizationDto>(content);
+            if (result?.Success != true ||
+                result.Data?.FirstOrDefault()?.Nm_result != "Показания успешно переданы")
+            {
+                _messenger.ShowError($"Ошибка во время передачи показаний на сервер my.mosenergosbyt.ru");
+                return false;
+            }
+
+            return true;
         }
     }
 }

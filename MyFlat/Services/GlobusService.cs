@@ -1,13 +1,10 @@
 ﻿using MyFlat.Common;
-using MyFlat.Dto;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -17,13 +14,14 @@ namespace MyFlat.Services
     {
         private readonly IMessenger _messenger;
         private readonly HttpClient _httpClient = new HttpClient();
+		private string _phpSessionId;
         private string _sessionId;
 
         public bool IsAuthorized
         {
             get
             {
-                return !string.IsNullOrEmpty(_sessionId);
+                return !string.IsNullOrEmpty(_phpSessionId);
             }
         }
 
@@ -37,7 +35,7 @@ namespace MyFlat.Services
             if (IsAuthorized)
                 return true;
 
-            _sessionId = await RetrieveSessionIdAsync();
+            _phpSessionId = await RetrieveSessionIdAsync();
 
             var request = CreateRequest(
                 new Uri("https://lk.globusenergo.ru/ajax/auth.php"),
@@ -56,12 +54,11 @@ namespace MyFlat.Services
             if (content.Contains("ERROR|Неверный логин или пароль"))
             {
                 _messenger.ShowError("Глобус: Неверный логин или пароль");
-                _sessionId = null;
+                _phpSessionId = null;
             }
 
             return IsAuthorized;
         }
-
         private async Task<string> RetrieveSessionIdAsync()
         {
             var container = new CookieContainer();
@@ -69,7 +66,6 @@ namespace MyFlat.Services
             using var httpClientHandler = new HttpClientHandler { CookieContainer = container };
             using var httpClient = new HttpClient(httpClientHandler);
             await httpClient.GetAsync(uri);
-
             var cookies = container.GetCookies(uri).Cast<Cookie>().ToList();
             return cookies.FirstOrDefault(c => c.Name == "PHPSESSID")?.Value;
         }
@@ -91,9 +87,7 @@ namespace MyFlat.Services
                 return false;
             }
 
-            await response.Content.ReadAsStringAsync();
-
-            _sessionId = null;
+            _phpSessionId = null;
             return !IsAuthorized;
         }
 
@@ -137,7 +131,7 @@ namespace MyFlat.Services
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Referer", referrer);
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            request.Headers.Add("Cookie", $"PHPSESSID={_sessionId}; BITRIX_SM_GUEST_ID=115872; BITRIX_SM_LAST_VISIT=02.08.2021+12%3A11%3A09; BITRIX_CONVERSION_CONTEXT_s1=%7B%22ID%22%3A8%2C%22EXPIRE%22%3A1627937940%2C%22UNIQUE%22%3A%5B%22conversion_visit_day%22%5D%7D; BX_USER_ID=02c28ee84de81190c66c50093df21db8");
+            request.Headers.Add("Cookie", $"PHPSESSID={_phpSessionId}; BITRIX_SM_GUEST_ID=115872; BITRIX_SM_LAST_VISIT=02.08.2021+12%3A11%3A09; BITRIX_CONVERSION_CONTEXT_s1=%7B%22ID%22%3A8%2C%22EXPIRE%22%3A1627937940%2C%22UNIQUE%22%3A%5B%22conversion_visit_day%22%5D%7D; BX_USER_ID=02c28ee84de81190c66c50093df21db8");
 
             return request;
         }
@@ -148,7 +142,7 @@ namespace MyFlat.Services
                 throw new InvalidOperationException();
 
             var request = CreateRequest(
-               new Uri("https://lk.globusenergo.ru/personal/info/ "),
+               new Uri("https://lk.globusenergo.ru/personal/info/"),
                "",
                "https://lk.globusenergo.ru/");
 
@@ -159,14 +153,44 @@ namespace MyFlat.Services
                 return null;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            if (!BalanceRetriever.TryGetBalance(content, out decimal result))
+            var html = await response.Content.ReadAsStringAsync();
+            if (!BalanceRetriever.TryGetBalance(html, out decimal result))
             {
                 _messenger.ShowError("Ошибка при получении баланса с сервера lk.globusenergo.ru");
                 return null;
             }
 
+            BitrixSessionRetriever.TryGetSessionId(html, out _sessionId);
             return result;
+        }
+
+        // This method must be called after GetBalanceAsync only (_sessionId must be set)
+        public async Task<bool> SendMetersAsync(int kitvhenHotWater, int bathroomHotWater)
+        {
+            if (!IsAuthorized)
+                throw new InvalidOperationException();
+
+            var request = CreateRequest(
+               new Uri("https://lk.globusenergo.ru/personal/meters/"),
+               $"action=set_meters&sessid={_sessionId}&indiccur1%5B91649%5D={kitvhenHotWater}&indiccur1%5B91650%5D={bathroomHotWater}",
+               "https://lk.globusenergo.ru/personal/meters/");
+
+            var response = await SendAsync(request);
+            if (response?.StatusCode != HttpStatusCode.OK)
+            {
+                _messenger.ShowError($"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                return false;
+            }
+
+            var html = await response.Content.ReadAsStringAsync();
+            if (html.Contains("errortext") ||
+                Regex.Matches(html, "Показания сохранены").Count!= 2)
+            {
+                _messenger.ShowError($"Ошибка во время передачи показаний на сервер lk.globusenergo.ru");
+                return false;
+            }
+
+            return true;
         }
     }
 }

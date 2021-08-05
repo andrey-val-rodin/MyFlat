@@ -1,8 +1,9 @@
 ﻿namespace MyFlat.Dto
 {
-    public class CounterChildDto
+    public class MeterChildDto
     {
-        public int Nm_counter { get; set; }
+        public int Id_counter { get; set; }
+        public string Nm_counter { get; set; }
         public int Vl_last_indication { get; set; }
         public string Dt_last_indication { get; set; }
     }

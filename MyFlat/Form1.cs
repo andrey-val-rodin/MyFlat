@@ -15,7 +15,18 @@ namespace MyFlat
     {
         private readonly MosOblEircService _mosOblEircService;
         private readonly GlobusService _globusService;
-        private IList<CounterChildDto> _counters;
+        private IList<MeterChildDto> _meters;
+
+        // Kitchen cold water   323381, 17523577
+        private MeterChildDto KitchenColdWater => GetMeter(17523577);
+        // Kitchen hot water    206922, 16702145
+        private MeterChildDto KitchenHotWater => GetMeter(16702145);
+        // Bathroom hot water   204933, 16702144
+        private MeterChildDto BathroomColdWater => GetMeter(17523578);
+        // Bathroom hot water   204933, 16702144
+        private MeterChildDto BathroomHotWater => GetMeter(16702144);
+        // Electricity          19843385, 14680903
+        private MeterChildDto Electricity => GetMeter(14680903);
 
         public Form1()
         {
@@ -32,14 +43,16 @@ namespace MyFlat
                 return;
             
             await ProcessMosOblEircAsync();
-            await ProcessCountersAsync();
+            await ProcessMetersAsync();
             await ProcessGlobusAsync();
-
-            await _mosOblEircService.LogoffAsync();
-            await _globusService.LogoffAsync();
 
             if (MustClose())
                 Close();
+        }
+
+        private MeterChildDto GetMeter(int id)
+        {
+            return _meters?.FirstOrDefault(c => c.Id_counter == id);
         }
 
         private bool MustClose()
@@ -47,7 +60,7 @@ namespace MyFlat
             return
                 labelMosOblEircCount.Text == "Оплачено" &&
                 labelGlobusCount.Text == "Оплачено" &&
-                !buttonCounters.Enabled &&
+                !buttonMeters.Enabled &&
                 !labelMessage.Visible;
         }
 
@@ -56,7 +69,7 @@ namespace MyFlat
             var tuple = await _mosOblEircService.GetBalanceAsync();
             if (tuple != null && tuple.Item2 != 0)
             {
-                labelMosOblEircCount.Text = $"Cчёт на {tuple.Item2} руб. с {tuple.Item1}";
+                labelMosOblEircCount.Text = $"Cчёт на {tuple.Item2} руб с {tuple.Item1}";
                 labelMosOblEircCount.ForeColor = Color.FromName("SaddleBrown");
             }
             else
@@ -66,22 +79,20 @@ namespace MyFlat
             }
         }
 
-        private async Task ProcessCountersAsync()
+        private async Task ProcessMetersAsync()
         {
-            _counters = await _mosOblEircService.GetCountersAsync();
-            if (_counters == null)
+            _meters = await _mosOblEircService.GetMetersAsync();
+            if (_meters == null)
                 return;
 
-            if (ShowOldCounters())
-                EnableCounterCotrols();
+            if (ShowOldMeters())
+                EnableMeterCotrols();
         }
 
-        private bool ShowOldCounters()
+        private bool ShowOldMeters()
         {
-            // Kitchen cold water   323381
-            var counter = GetCounter(323381);
-            if (counter != null)
-                labelKitchenColdWaterOld.Text = counter.Vl_last_indication.ToString();
+            if (KitchenColdWater != null)
+                labelKitchenColdWaterOld.Text = KitchenColdWater.Vl_last_indication.ToString();
             else
             {
                 ShowError("Нет показаний счётчика");
@@ -89,10 +100,8 @@ namespace MyFlat
                 return false;
             }
 
-            // Kitchen hot water    206922
-            counter = GetCounter(206922);
-            if (counter != null)
-                labelKitchenHotWaterOld.Text = counter.Vl_last_indication.ToString();
+            if (KitchenHotWater != null)
+                labelKitchenHotWaterOld.Text = KitchenHotWater.Vl_last_indication.ToString();
             else
             {
                 ShowError("Нет показаний счётчика");
@@ -100,10 +109,8 @@ namespace MyFlat
                 return false;
             }
 
-            // Bathroom cold water  323391
-            counter = GetCounter(323391);
-            if (counter != null)
-                labelBathroomColdWaterOld.Text = counter.Vl_last_indication.ToString();
+            if (BathroomColdWater != null)
+                labelBathroomColdWaterOld.Text = BathroomColdWater.Vl_last_indication.ToString();
             else
             {
                 ShowError("Нет показаний счётчика");
@@ -111,10 +118,8 @@ namespace MyFlat
                 return false;
             }
 
-            // Bathroom hot water   204933
-            counter = GetCounter(204933);
-            if (counter != null)
-                labelBathroomHotWaterOld.Text = counter.Vl_last_indication.ToString();
+            if (BathroomHotWater != null)
+                labelBathroomHotWaterOld.Text = BathroomHotWater.Vl_last_indication.ToString();
             else
             {
                 ShowError("Нет показаний счётчика");
@@ -122,10 +127,8 @@ namespace MyFlat
                 return false;
             }
 
-            // Electricity          19843385
-            counter = GetCounter(19843385);
-            if (counter != null)
-                labelElectricityOld.Text = counter.Vl_last_indication.ToString();
+            if (Electricity != null)
+                labelElectricityOld.Text = Electricity.Vl_last_indication.ToString();
             else
             {
                 ShowError("Нет показаний счётчика");
@@ -136,42 +139,27 @@ namespace MyFlat
             return true;
         }
 
-        private CounterChildDto GetCounter(int id)
-        {
-            return _counters?.FirstOrDefault(c => c.Nm_counter == id);
-        }
-
-        private void EnableCounterCotrols()
+        private void EnableMeterCotrols()
         {
             var now = DateTime.Now;
-            if (now.Day >= 5)
+            if (now.Day >= 5 && now.Day <= 25)
             {
-                // Kitchen cold water   323381
-                var counter = GetCounter(323381);
-                if (counter.GetDate().Month != now.Month)
+                if (KitchenColdWater?.GetDate().Month != now.Month)
                     textBoxKitchenColdWater.Enabled = true;
 
-                // Kitchen hot water    206922
-                counter = GetCounter(206922);
-                if (counter.GetDate().Month != now.Month)
+                if (KitchenHotWater?.GetDate().Month != now.Month)
                     textBoxKitchenHotWater.Enabled = true;
 
-                // Bathroom cold water  323391
-                counter = GetCounter(323391);
-                if (counter.GetDate().Month != now.Month)
+                if (BathroomColdWater?.GetDate().Month != now.Month)
                     textBoxBathroomColdWater.Enabled = true;
 
-                // Bathroom hot water   204933
-                counter = GetCounter(204933);
-                if (counter.GetDate().Month != now.Month)
+                if (BathroomHotWater?.GetDate().Month != now.Month)
                     textBoxBathroomHotWater.Enabled = true;
             }
 
-            if (now.Day >= 15)
+            if (now.Day >= 15 && now.Day <= 26)
             {
-                // Electricity          19843385
-                var counter = GetCounter(19843385);
-                if (counter.GetDate().Month != now.Month)
+                if (Electricity?.GetDate().Month != now.Month)
                     textBoxElectricity.Enabled = true;
             }
 
@@ -180,7 +168,7 @@ namespace MyFlat
                 textBoxBathroomColdWater.Enabled ||
                 textBoxBathroomHotWater.Enabled ||
                 textBoxElectricity.Enabled)
-                buttonCounters.Enabled = true;
+                buttonMeters.Enabled = true;
         }
 
         public void ShowMessage(string message)
@@ -202,7 +190,7 @@ namespace MyFlat
             var balance = await _globusService.GetBalanceAsync();
             if (balance != null && balance.Value > 0)
             {
-                labelGlobusCount.Text = $"Выставлен счёт на {balance} руб.";
+                labelGlobusCount.Text = $"Выставлен счёт на {balance} руб";
                 labelGlobusCount.ForeColor = Color.FromName("SaddleBrown");
             }
             else
@@ -220,6 +208,106 @@ namespace MyFlat
         private void linkLabelGlobus_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(new ProcessStartInfo("https://lk.globusenergo.ru") { UseShellExecute = true });
+        }
+
+        private void textBoxKitchenColdWater_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DoValidation(textBoxKitchenColdWater, KitchenColdWater))
+                e.Cancel = true;
+        }
+
+        private void textBoxKitchenHotWater_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DoValidation(textBoxKitchenHotWater, KitchenHotWater))
+                e.Cancel = true;
+        }
+
+        private void textBoxBathroomColdWater_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DoValidation(textBoxBathroomColdWater, BathroomColdWater))
+                e.Cancel = true;
+        }
+
+        private void textBoxBathroomHotWater_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DoValidation(textBoxBathroomHotWater, BathroomHotWater))
+                e.Cancel = true ;
+        }
+
+        private void textBoxElectricity_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!DoValidation(textBoxElectricity, Electricity))
+                e.Cancel = true;
+        }
+
+        private bool DoValidation(TextBox textBox, MeterChildDto meter)
+        {
+            if (!textBox.Enabled)
+                return true;
+
+            string error = null;
+            var oldValue = meter?.Vl_last_indication;
+            if (string.IsNullOrEmpty(textBox.Text))
+                error = "Значение должно быть заполнено";
+            else if (!int.TryParse(textBox.Text, out int value))
+                error = "Значение должно быть целочисленным";
+            else if (value < oldValue)
+                error = "Значение должно быть не меньше прежнего";
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                textBox.Select(0, textBox.Text.Length);
+                errorProvider.SetError(textBox, error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private async void buttonMeters_Click(object sender, EventArgs e)
+        {
+            errorProvider.Clear();
+            if (ValidateChildren(ValidationConstraints.Enabled))
+            {
+                var kitchenColdWater = textBoxKitchenColdWater.Enabled ?
+                    int.Parse(textBoxKitchenColdWater.Text) : 0;
+                var kitchenHotWater = textBoxKitchenHotWater.Enabled ?
+                    int.Parse(textBoxKitchenHotWater.Text) : 0;
+                var bathroomColdWater = textBoxBathroomColdWater.Enabled ?
+                    int.Parse(textBoxBathroomColdWater.Text) : 0;
+                var bathroomHotWater = textBoxBathroomHotWater.Enabled ?
+                    int.Parse(textBoxBathroomHotWater.Text) : 0;
+                var electricity = textBoxElectricity.Enabled ?
+                    int.Parse(textBoxElectricity.Text) : 0;
+
+                if (kitchenColdWater == 0 && kitchenHotWater == 0 &&
+                    bathroomColdWater == 0 && bathroomHotWater == 0 &&
+                    electricity == 0)
+                    return; // Nothing to send
+
+                if ((kitchenColdWater == 0 ||
+                    await _mosOblEircService.SendMeterAsync(KitchenColdWater.Id_counter, kitchenColdWater)) &&
+                    (kitchenHotWater == 0 ||
+                    await _mosOblEircService.SendMeterAsync(KitchenHotWater.Id_counter, kitchenHotWater)) &&
+                    (bathroomColdWater == 0 ||
+                    await _mosOblEircService.SendMeterAsync(BathroomColdWater.Id_counter, bathroomColdWater)) &&
+                    (bathroomHotWater == 0 ||
+                    await _mosOblEircService.SendMeterAsync(BathroomHotWater.Id_counter, bathroomHotWater)) &&
+                    (electricity == 0 ||
+                    await _mosOblEircService.SendMeterAsync(Electricity.Id_counter, electricity)) &&
+                    (kitchenHotWater == 0 || bathroomHotWater == 0 ||
+                    await _globusService.SendMetersAsync(kitchenHotWater, bathroomHotWater)))
+                    ShowMessage("Показания были успешно переданы");
+                return;
+            }
+        }
+
+        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            errorProvider.Clear();
+
+            await _mosOblEircService.LogoffAsync();
+            await _globusService.LogoffAsync();
         }
     }
 }
