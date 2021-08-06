@@ -154,13 +154,13 @@ namespace MyFlat.Services
             }
 
             var html = await response.Content.ReadAsStringAsync();
-            if (!BalanceRetriever.TryGetBalance(html, out decimal result))
+            if (!HtmlParser.TryGetBalance(html, out decimal result))
             {
                 _messenger.ShowError("Ошибка при получении баланса с сервера lk.globusenergo.ru");
                 return null;
             }
 
-            BitrixSessionRetriever.TryGetSessionId(html, out _sessionId);
+            HtmlParser.TryGetSessionId(html, out _sessionId);
             return result;
         }
 
