@@ -14,7 +14,7 @@ namespace MyFlat.Services
     {
         private readonly IMessenger _messenger;
         private readonly HttpClient _httpClient = new HttpClient();
-		private string _phpSessionId;
+        private string _phpSessionId;
         private string _sessionId;
 
         public bool IsAuthorized
@@ -40,13 +40,13 @@ namespace MyFlat.Services
             var request = CreateRequest(
                 new Uri("https://lk.globusenergo.ru/ajax/auth.php"),
                 $"tourl=%2Fpersonal%2Finfo%2F&AUTH_FORM=Y&TYPE=AUTH&USER_LOGIN={HttpUtility.UrlEncode(login)}&USER_PASSWORD={HttpUtility.UrlEncode(password)}",
-                "https://lk.globusenergo.ru/"
-                );
+                "https://lk.globusenergo.ru/");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -83,7 +83,8 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -149,7 +150,8 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
@@ -178,15 +180,17 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
             var html = await response.Content.ReadAsStringAsync();
             if (html.Contains("errortext") ||
-                Regex.Matches(html, "Показания сохранены").Count!= 2)
+                Regex.Matches(html, "Показания сохранены").Count != 2)
             {
-                _messenger.ShowError($"Ошибка во время передачи показаний на сервер lk.globusenergo.ru");
+                _messenger.ShowError(
+                    $"Ошибка во время передачи показаний на сервер lk.globusenergo.ru");
                 return false;
             }
 

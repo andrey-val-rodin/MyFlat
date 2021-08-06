@@ -52,7 +52,7 @@ namespace Tests.Services
             var service = new MosOblEircService(new MessengerStub());
             await service.AuthorizeAsync(Config.MosOblEircUser, Config.MosOblEircPassword);
             var meters = await service.GetMetersAsync();
-            
+
             Assert.NotNull(meters);
             Assert.True(meters.Count == 5);
             // Kitchen cold water   323381, 17523577

@@ -1,4 +1,4 @@
-﻿namespace MyFlat
+﻿namespace MyFlat.Common
 {
     public interface IMessenger
     {

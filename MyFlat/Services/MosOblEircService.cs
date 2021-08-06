@@ -1,4 +1,5 @@
-﻿using MyFlat.Dto;
+﻿using MyFlat.Common;
+using MyFlat.Dto;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,14 @@ namespace MyFlat.Services
             var request = CreateRequest(
                 new Uri("https://my.mosenergosbyt.ru/gate_lkcomu?action=auth&query=login"),
                 $"login={HttpUtility.UrlEncode(login)}&psw={HttpUtility.UrlEncode(password)}&vl_device_info=%7B%22appver%22%3A%221.25.0%22%2C%22type%22%3A%22browser%22%2C%22userAgent%22%3A%22Mozilla%2F5.0%20%28Windows%20NT%206.1%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F92.0.4515.107%20Safari%2F537.36%22%7D",
-                "https://my.mosenergosbyt.ru/auth"                
+                "https://my.mosenergosbyt.ru/auth"
                 );
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -74,7 +76,8 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -141,15 +144,16 @@ namespace MyFlat.Services
             if (!IsAuthorized)
                 throw new InvalidOperationException();
 
-             var request = CreateRequest(
-                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
-                "plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
-                "https://my.mosenergosbyt.ru/accounts/6088092/events/payment-doc");
+            var request = CreateRequest(
+               new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
+               "plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
+               "https://my.mosenergosbyt.ru/accounts/6088092/events/payment-doc");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
@@ -164,7 +168,8 @@ namespace MyFlat.Services
             var child = result.Data?.FirstOrDefault();
             if (child == null)
             {
-                _messenger.ShowError("Ошибка при попытке получить баланс из личного кабинета. Похоже, структура данных ответа изменилась");
+                _messenger.ShowError(
+                    "Ошибка при попытке получить баланс из личного кабинета. Похоже, структура данных ответа изменилась");
                 return null;
             }
 
@@ -186,7 +191,8 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
@@ -194,7 +200,8 @@ namespace MyFlat.Services
             var result = JsonConvert.DeserializeObject<MeterDto>(content);
             if (result?.Data.Count == 0)
             {
-                _messenger.ShowError("Ошибка при попытке получить показания счётчиков личного кабинета");
+                _messenger.ShowError(
+                    "Ошибка при попытке получить показания счётчиков личного кабинета");
                 return null;
             }
 
@@ -215,7 +222,8 @@ namespace MyFlat.Services
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
             {
-                _messenger.ShowError($"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                _messenger.ShowError(
+                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -224,7 +232,8 @@ namespace MyFlat.Services
             if (result?.Success != true ||
                 result.Data?.FirstOrDefault()?.Nm_result != "Показания успешно переданы")
             {
-                _messenger.ShowError($"Ошибка во время передачи показаний на сервер my.mosenergosbyt.ru");
+                _messenger.ShowError(
+                    $"Ошибка во время передачи показаний на сервер my.mosenergosbyt.ru");
                 return false;
             }
 

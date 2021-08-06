@@ -1,4 +1,4 @@
-﻿using MyFlat;
+﻿using MyFlat.Common;
 
 namespace Tests.Services
 {

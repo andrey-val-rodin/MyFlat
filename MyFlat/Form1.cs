@@ -41,7 +41,7 @@ namespace MyFlat
             if (!await _mosOblEircService.AuthorizeAsync(Config.MosOblEircUser, Config.MosOblEircPassword) ||
                 !await _globusService.AuthorizeAsync(Config.GlobusUser, Config.GlobusPassword))
                 return;
-            
+
             await ProcessMosOblEircAsync();
             await ProcessMetersAsync();
             await ProcessGlobusAsync();
@@ -231,7 +231,7 @@ namespace MyFlat
         private void textBoxBathroomHotWater_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!DoValidation(textBoxBathroomHotWater, BathroomHotWater))
-                e.Cancel = true ;
+                e.Cancel = true;
         }
 
         private void textBoxElectricity_Validating(object sender, System.ComponentModel.CancelEventArgs e)
