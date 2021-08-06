@@ -134,7 +134,7 @@ namespace MyFlat.Services
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Referer", referrer);
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            request.Headers.Add("Cookie", "_ym_uid = 1583333991421670844; _ym_d = 1626976476; BITRIX_SM_GUEST_ID = 13787575; BITRIX_SM_LAST_VISIT = 30.07.2021 + 11 % 3A19 % 3A41; session - cookie = 16969ef9c8a9d7a46452b75f7e477b295a21ef607edc27ec0e92db7b82a9fc32096674635720326a39eb03f88a6d55a8; _ym_isad = 2");
+            request.Headers.Add("Cookie", "_ym_uid=1583333991421670844; _ym_d=1626976476; session-cookie=1696490294bc5bb36452b75f7e477b290f5353a23208f17c6bdd7f9dce13a9cf30d2819eacec82ea0f3eb3a05451737f; _ym_isad=2; _ym_visorc=w; BITRIX_SM_GUEST_ID=13787575; BITRIX_SM_LAST_VISIT=30.07.2021+11%3A19%3A41");
 
             return request;
         }

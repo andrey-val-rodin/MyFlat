@@ -306,8 +306,10 @@ namespace MyFlat
         {
             errorProvider.Clear();
 
-            await _mosOblEircService.LogoffAsync();
-            await _globusService.LogoffAsync();
+            if (_mosOblEircService.IsAuthorized)
+                await _mosOblEircService.LogoffAsync();
+            if (_globusService.IsAuthorized)
+                await _globusService.LogoffAsync();
         }
     }
 }
