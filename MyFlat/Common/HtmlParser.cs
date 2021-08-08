@@ -19,12 +19,8 @@ namespace MyFlat.Common
                 if (!match.Success)
                     return false;
 
-                pattern = "[0-9,.]+";
-                match = Regex.Match(match.Value, pattern);
-                if (!match.Success)
-                    return false;
-
-                result = decimal.Parse(match.Value, CultureInfo.InvariantCulture);
+                var strings = match.Value.Split('"');
+                result = decimal.Parse(strings[3], CultureInfo.InvariantCulture);
             }
             catch
             {
