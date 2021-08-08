@@ -15,7 +15,13 @@ namespace MyFlat.Services
         private readonly IMessenger _messenger;
         private readonly HttpClient _httpClient = new HttpClient();
         private string _phpSessionId;
-        private string _sessionId;
+        private string _bitrixSessionId;
+        private decimal? _balance;
+
+        public decimal? Balance
+        {
+            get { return _balance; }
+        }
 
         public bool IsAuthorized
         {
@@ -50,15 +56,30 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            if (content.Contains("ERROR|Неверный логин или пароль"))
+            var html = await response.Content.ReadAsStringAsync();
+            if (html.Contains("ERROR|Неверный логин или пароль"))
             {
                 _messenger.ShowError("Глобус: Неверный логин или пароль");
-                _phpSessionId = null;
+                Reset();
             }
+
+            if (!HtmlParser.TryGetSessionId(html, out _bitrixSessionId))
+            {
+                _messenger.ShowError("Глобус: ошибка при получении Bitrix SessionId");
+                Reset();
+            }
+
+            if (!HtmlParser.TryGetBalance(html, out decimal result))
+            {
+                _messenger.ShowError("Ошибка при получении баланса с сервера lk.globusenergo.ru");
+                Reset();
+            }
+            else
+                _balance = result;
 
             return IsAuthorized;
         }
+
         private async Task<string> RetrieveSessionIdAsync()
         {
             var container = new CookieContainer();
@@ -68,6 +89,13 @@ namespace MyFlat.Services
             await httpClient.GetAsync(uri);
             var cookies = container.GetCookies(uri).Cast<Cookie>().ToList();
             return cookies.FirstOrDefault(c => c.Name == "PHPSESSID")?.Value;
+        }
+
+        private void Reset()
+        {
+            _phpSessionId = null;
+            _bitrixSessionId = null;
+            _balance = null;
         }
 
         public async Task<bool> LogoffAsync()
@@ -162,11 +190,9 @@ namespace MyFlat.Services
                 return null;
             }
 
-            HtmlParser.TryGetSessionId(html, out _sessionId);
             return result;
         }
 
-        // This method must be called after GetBalanceAsync only (_sessionId must be set)
         public async Task<bool> SendMetersAsync(int kitvhenHotWater, int bathroomHotWater)
         {
             if (!IsAuthorized)
@@ -174,7 +200,7 @@ namespace MyFlat.Services
 
             var request = CreateRequest(
                new Uri("https://lk.globusenergo.ru/personal/meters/"),
-               $"action=set_meters&sessid={_sessionId}&indiccur1%5B91649%5D={kitvhenHotWater}&indiccur1%5B91650%5D={bathroomHotWater}",
+               $"action=set_meters&sessid={_bitrixSessionId}&indiccur1%5B91649%5D={kitvhenHotWater}&indiccur1%5B91650%5D={bathroomHotWater}",
                "https://lk.globusenergo.ru/personal/meters/");
 
             var response = await SendAsync(request);

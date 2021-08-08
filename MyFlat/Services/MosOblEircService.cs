@@ -201,7 +201,7 @@ namespace MyFlat.Services
             if (result?.Data.Count == 0)
             {
                 _messenger.ShowError(
-                    "Ошибка при попытке получить показания счётчиков личного кабинета");
+                    "Ошибка при попытке получить показания счётчиков из личного кабинета");
                 return null;
             }
 

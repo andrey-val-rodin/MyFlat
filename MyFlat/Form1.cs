@@ -44,7 +44,7 @@ namespace MyFlat
 
             await ProcessMosOblEircAsync();
             await ProcessMetersAsync();
-            await ProcessGlobusAsync();
+            ProcessGlobus();
 
             if (MustClose())
                 Close();
@@ -67,9 +67,12 @@ namespace MyFlat
         private async Task ProcessMosOblEircAsync()
         {
             var tuple = await _mosOblEircService.GetBalanceAsync();
-            if (tuple != null && tuple.Item2 != 0)
+            if (tuple == null)
+                return; // Error label will contain message
+
+            if (tuple.Item2 != 0)
             {
-                labelMosOblEircCount.Text = $"Cчёт на {tuple.Item2} руб с {tuple.Item1}";
+                labelMosOblEircCount.Text = $"Выставлен счёт на {tuple.Item2} руб";
                 labelMosOblEircCount.ForeColor = Color.FromName("SaddleBrown");
             }
             else
@@ -144,31 +147,21 @@ namespace MyFlat
             var now = DateTime.Now;
             if (now.Day >= 5 && now.Day <= 25)
             {
-                if (KitchenColdWater?.GetDate().Month != now.Month)
-                    textBoxKitchenColdWater.Enabled = true;
-
-                if (KitchenHotWater?.GetDate().Month != now.Month)
-                    textBoxKitchenHotWater.Enabled = true;
-
-                if (BathroomColdWater?.GetDate().Month != now.Month)
-                    textBoxBathroomColdWater.Enabled = true;
-
-                if (BathroomHotWater?.GetDate().Month != now.Month)
-                    textBoxBathroomHotWater.Enabled = true;
+                textBoxKitchenColdWater.Enabled = KitchenColdWater?.GetDate().Month != now.Month;
+                textBoxKitchenHotWater.Enabled = KitchenHotWater?.GetDate().Month != now.Month;
+                textBoxBathroomColdWater.Enabled = BathroomColdWater?.GetDate().Month != now.Month;
+                textBoxBathroomHotWater.Enabled = BathroomHotWater?.GetDate().Month != now.Month;
             }
 
             if (now.Day >= 15 && now.Day <= 26)
-            {
-                if (Electricity?.GetDate().Month != now.Month)
-                    textBoxElectricity.Enabled = true;
-            }
+                textBoxElectricity.Enabled = Electricity?.GetDate().Month != now.Month;
 
-            if (textBoxKitchenColdWater.Enabled ||
+            buttonMeters.Enabled =
+                textBoxKitchenColdWater.Enabled ||
                 textBoxKitchenHotWater.Enabled ||
                 textBoxBathroomColdWater.Enabled ||
                 textBoxBathroomHotWater.Enabled ||
-                textBoxElectricity.Enabled)
-                buttonMeters.Enabled = true;
+                textBoxElectricity.Enabled;
         }
 
         public void ShowMessage(string message)
@@ -185,10 +178,13 @@ namespace MyFlat
             labelMessage.Visible = true;
         }
 
-        private async Task ProcessGlobusAsync()
+        private void ProcessGlobus()
         {
-            var balance = await _globusService.GetBalanceAsync();
-            if (balance != null && balance.Value > 0)
+            var balance = _globusService.Balance;
+            if (balance == null)
+                return; // Error label will contain message
+
+            if (balance > 0)
             {
                 labelGlobusCount.Text = $"Выставлен счёт на {balance} руб";
                 labelGlobusCount.ForeColor = Color.FromName("SaddleBrown");
@@ -297,7 +293,11 @@ namespace MyFlat
                     await _mosOblEircService.SendMeterAsync(Electricity.Id_counter, electricity)) &&
                     (kitchenHotWater == 0 || bathroomHotWater == 0 ||
                     await _globusService.SendMetersAsync(kitchenHotWater, bathroomHotWater)))
+                {
                     ShowMessage("Показания были успешно переданы");
+                    await ProcessMetersAsync();
+                }
+
                 return;
             }
         }
