@@ -52,7 +52,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"Глобус вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -71,7 +71,7 @@ namespace MyFlat.Services
 
             if (!HtmlParser.TryGetBalance(html, out decimal result))
             {
-                _messenger.ShowError("Ошибка при получении баланса с сервера lk.globusenergo.ru");
+                _messenger.ShowError("Ошибка при получении баланса из Глобуса");
                 Reset();
             }
             else
@@ -112,7 +112,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"Глобус вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -179,14 +179,14 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"Глобус вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
             var html = await response.Content.ReadAsStringAsync();
             if (!HtmlParser.TryGetBalance(html, out decimal result))
             {
-                _messenger.ShowError("Ошибка при получении баланса с сервера lk.globusenergo.ru");
+                _messenger.ShowError("Ошибка при получении баланса из Глобуса");
                 return null;
             }
 
@@ -207,7 +207,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер lk.globusenergo.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"Глобус вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -216,7 +216,7 @@ namespace MyFlat.Services
                 Regex.Matches(html, "Показания сохранены").Count != 2)
             {
                 _messenger.ShowError(
-                    $"Ошибка во время передачи показаний на сервер lk.globusenergo.ru");
+                    $"Ошибка во время передачи показаний в Глобус");
                 return false;
             }
 

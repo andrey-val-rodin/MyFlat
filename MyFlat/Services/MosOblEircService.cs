@@ -46,7 +46,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -55,7 +55,7 @@ namespace MyFlat.Services
             var data = result.Data.FirstOrDefault();
             if (data == null || data.Nm_result != "Ошибок нет")
             {
-                _messenger.ShowError(data.Nm_result);
+                _messenger.ShowError("МосОблЕирц:" + data.Nm_result);
                 return false;
             }
 
@@ -77,7 +77,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
@@ -161,7 +161,7 @@ namespace MyFlat.Services
             var result = JsonConvert.DeserializeObject<BalanceDto>(content);
             if (result == null || !result.Success)
             {
-                _messenger.ShowError("Ошибка при попытке получить баланс из личного кабинета");
+                _messenger.ShowError("Ошибка при попытке получить баланс из МосОблЕирц");
                 return null;
             }
 
@@ -169,7 +169,7 @@ namespace MyFlat.Services
             if (child == null)
             {
                 _messenger.ShowError(
-                    "Ошибка при попытке получить баланс из личного кабинета. Похоже, структура данных ответа изменилась");
+                    "Ошибка при попытке получить баланс из МосОблЕирц. Похоже, структура данных ответа изменилась");
                 return null;
             }
 
@@ -192,7 +192,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
                 return null;
             }
 
@@ -223,7 +223,7 @@ namespace MyFlat.Services
             if (response?.StatusCode != HttpStatusCode.OK)
             {
                 _messenger.ShowError(
-                    $"Сервер my.mosenergosbyt.ru вернул код ошибки {response?.StatusCode.ToString()}");
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
                 return false;
             }
 
@@ -233,7 +233,7 @@ namespace MyFlat.Services
                 result.Data?.FirstOrDefault()?.Nm_result != "Показания успешно переданы")
             {
                 _messenger.ShowError(
-                    $"Ошибка во время передачи показаний на сервер my.mosenergosbyt.ru");
+                    $"Ошибка во время передачи показаний в МосОблЕирц");
                 return false;
             }
 
