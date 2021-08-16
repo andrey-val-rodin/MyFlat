@@ -71,7 +71,7 @@ namespace MyFlat.Services
             var request = CreateRequest(
                 new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=invalidate&query=ProfileExit&session={_sessionId}"),
                 "vl_token=",
-                "https://my.mosenergosbyt.ru/accounts/6088092/events/payment-doc");
+                $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/payment-doc");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -146,8 +146,8 @@ namespace MyFlat.Services
 
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
-               "plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
-               "https://my.mosenergosbyt.ru/accounts/6088092/events/payment-doc");
+               $"plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/payment-doc");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -185,8 +185,8 @@ namespace MyFlat.Services
 
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
-               "plugin=smorodinaTransProxy&proxyquery=AbonentEquipment&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
-               "https://my.mosenergosbyt.ru/accounts/6088092/events/readings");
+               $"plugin=smorodinaTransProxy&proxyquery=AbonentEquipment&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/readings");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -216,8 +216,8 @@ namespace MyFlat.Services
             var date = HttpUtility.UrlEncode(DateTime.Now.ToString("o"));
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=AbonentSaveIndication&session={_sessionId}"),
-               $"dt_indication={date}&id_counter={meterId}&id_counter_zn=1&id_source=15418&plugin=propagateMoeInd&pr_skip_anomaly=0&pr_skip_err=0&vl_indication={value}&vl_provider=%7B%22id_abonent%22%3A%207948916%7D",
-               "https://my.mosenergosbyt.ru/accounts/6088092/transfer-indications");
+               $"dt_indication={date}&id_counter={meterId}&id_counter_zn=1&id_source=15418&plugin=propagateMoeInd&pr_skip_anomaly=0&pr_skip_err=0&vl_indication={value}&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/transfer-indications");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
