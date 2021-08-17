@@ -17,6 +17,8 @@ namespace MyFlat.Services
         private readonly IMessenger _messenger;
         private readonly HttpClient _httpClient = new HttpClient();
         private string _sessionId;
+        private int _accountId;
+        private int _abonentId;
 
         public bool IsAuthorized
         {
@@ -60,7 +62,42 @@ namespace MyFlat.Services
             }
 
             _sessionId = data.Session;
+            if (!await RetrieveAccountInfo())
+                _sessionId = null;
+
             return IsAuthorized;
+        }
+
+        private async Task<bool> RetrieveAccountInfo()
+        {
+            var request = CreateRequest(
+                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=LSList&session={_sessionId}"),
+                "",
+                "https://my.mosenergosbyt.ru/accounts/0"
+                );
+
+            var response = await SendAsync(request);
+            if (response?.StatusCode != HttpStatusCode.OK)
+            {
+                _messenger.ShowError(
+                    $"МосОблЕирц вернул код ошибки {response?.StatusCode.ToString()}");
+                return false;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<AccountDto>(content);
+            var data = result.Data.FirstOrDefault();
+            if (!result.Success || data == null)
+            {
+                _messenger.ShowError(
+                    $"МосОблЕирц: ошибка при получении учётной записи");
+            }
+
+            _accountId = data.Id_service;
+            var abonent = JsonConvert.DeserializeObject<AbonentDto>(data.Vl_provider);
+            _abonentId = abonent.Id_abonent;
+
+            return true;
         }
 
         public async Task<bool> LogoffAsync()
@@ -71,7 +108,7 @@ namespace MyFlat.Services
             var request = CreateRequest(
                 new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=invalidate&query=ProfileExit&session={_sessionId}"),
                 "vl_token=",
-                $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/payment-doc");
+                $"https://my.mosenergosbyt.ru/accounts/{_accountId}/events/payment-doc");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -146,8 +183,8 @@ namespace MyFlat.Services
 
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
-               $"plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
-               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/payment-doc");
+               $"plugin=smorodinaTransProxy&proxyquery=AbonentCurrentBalance&vl_provider=%7B%22id_abonent%22%3A%20{_abonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{_accountId}/events/payment-doc");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -185,8 +222,8 @@ namespace MyFlat.Services
 
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=smorodinaTransProxy&session={_sessionId}"),
-               $"plugin=smorodinaTransProxy&proxyquery=AbonentEquipment&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
-               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/events/readings");
+               $"plugin=smorodinaTransProxy&proxyquery=AbonentEquipment&vl_provider=%7B%22id_abonent%22%3A%20{_abonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{_accountId}/events/readings");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
@@ -216,8 +253,8 @@ namespace MyFlat.Services
             var date = HttpUtility.UrlEncode(DateTime.Now.ToString("o"));
             var request = CreateRequest(
                new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=AbonentSaveIndication&session={_sessionId}"),
-               $"dt_indication={date}&id_counter={meterId}&id_counter_zn=1&id_source=15418&plugin=propagateMoeInd&pr_skip_anomaly=0&pr_skip_err=0&vl_indication={value}&vl_provider=%7B%22id_abonent%22%3A%20{Config.MosOblEircAbonentId}%7D",
-               $"https://my.mosenergosbyt.ru/accounts/{Config.MosOblEircAccountId}/transfer-indications");
+               $"dt_indication={date}&id_counter={meterId}&id_counter_zn=1&id_source=15418&plugin=propagateMoeInd&pr_skip_anomaly=0&pr_skip_err=0&vl_indication={value}&vl_provider=%7B%22id_abonent%22%3A%20{_abonentId}%7D",
+               $"https://my.mosenergosbyt.ru/accounts/{_accountId}/transfer-indications");
 
             var response = await SendAsync(request);
             if (response?.StatusCode != HttpStatusCode.OK)
