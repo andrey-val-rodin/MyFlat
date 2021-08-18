@@ -62,13 +62,13 @@ namespace MyFlat.Services
             }
 
             _sessionId = data.Session;
-            if (!await RetrieveAccountInfo())
+            if (!await RetrieveAccountInfoAsync())
                 _sessionId = null;
 
             return IsAuthorized;
         }
 
-        private async Task<bool> RetrieveAccountInfo()
+        private async Task<bool> RetrieveAccountInfoAsync()
         {
             var request = CreateRequest(
                 new Uri($"https://my.mosenergosbyt.ru/gate_lkcomu?action=sql&query=LSList&session={_sessionId}"),
