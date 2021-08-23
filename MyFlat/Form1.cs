@@ -1,5 +1,6 @@
 ﻿using MyFlat.Common;
 using MyFlat.Dto;
+using MyFlat.Properties;
 using MyFlat.Services;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace MyFlat
 {
     public partial class Form1 : Form, IMessenger
     {
+        private readonly AppSettings _settings = new AppSettings();
         private readonly MosOblEircService _mosOblEircService;
         private readonly GlobusService _globusService;
         private IList<MeterChildDto> _meters;
@@ -184,7 +186,10 @@ namespace MyFlat
             if (balance == null)
                 return; // Error label will contain message
 
-            if (balance > 0)
+            // Globus site keeps invoice many days and even weeks
+            // The program will display it just a few times
+            var mustDisplay = _settings.UpdateAndCheckNecessityToDisplay(balance.Value);
+            if (mustDisplay)
             {
                 labelGlobusCount.Text = $"Выставлен счёт на {balance} руб";
                 labelGlobusCount.ForeColor = Color.FromName("SaddleBrown");
