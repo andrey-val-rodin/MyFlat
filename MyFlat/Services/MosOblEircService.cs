@@ -212,7 +212,7 @@ namespace MyFlat.Services
 
             return new Tuple<string, decimal>(
                 child.Dt_period_balance.Replace(" 00:00:00", ""),
-                child.Sm_insurance - child.Sm_balance);
+                child.Sm_balance - child.Sm_insurance);
         }
 
         public async Task<IList<MeterChildDto>> GetMetersAsync()
