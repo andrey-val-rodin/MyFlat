@@ -77,8 +77,9 @@ namespace MyFlat
             this.labelMosOblEircCount.AutoSize = true;
             this.labelMosOblEircCount.Location = new System.Drawing.Point(20, 29);
             this.labelMosOblEircCount.Name = "labelMosOblEircCount";
-            this.labelMosOblEircCount.Size = new System.Drawing.Size(0, 20);
+            this.labelMosOblEircCount.Size = new System.Drawing.Size(78, 20);
             this.labelMosOblEircCount.TabIndex = 1;
+            this.labelMosOblEircCount.Text = "Загрузка...";
             // 
             // linkLabelMosOblEirc
             // 
@@ -107,8 +108,9 @@ namespace MyFlat
             this.labelGlobusCount.AutoSize = true;
             this.labelGlobusCount.Location = new System.Drawing.Point(18, 30);
             this.labelGlobusCount.Name = "labelGlobusCount";
-            this.labelGlobusCount.Size = new System.Drawing.Size(0, 20);
+            this.labelGlobusCount.Size = new System.Drawing.Size(78, 20);
             this.labelGlobusCount.TabIndex = 4;
+            this.labelGlobusCount.Text = "Загрузка...";
             // 
             // linkLabelGlobus
             // 

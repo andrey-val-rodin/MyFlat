@@ -49,7 +49,11 @@ namespace MyFlat
             ProcessGlobus();
 
             if (MustClose())
+            {
+                // Allow the user to see results
+                await Task.Delay(TimeSpan.FromSeconds(1));
                 Close();
+            }
         }
 
         private MeterChildDto GetMeter(int id)
