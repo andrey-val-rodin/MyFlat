@@ -61,18 +61,21 @@ namespace MyFlat.Services
             {
                 _messenger.ShowError("Глобус: Неверный логин или пароль");
                 Reset();
+                return false;
             }
 
             if (!HtmlParser.TryGetSessionId(html, out _bitrixSessionId))
             {
                 _messenger.ShowError("Глобус: ошибка при получении Bitrix SessionId");
                 Reset();
+                return false;
             }
 
             if (!HtmlParser.TryGetBalance(html, out decimal result))
             {
                 _messenger.ShowError("Ошибка при получении баланса из Глобуса");
                 Reset();
+                return false;
             }
             else
                 _balance = result;
