@@ -42,6 +42,11 @@ namespace MyFlat.Services
                 return true;
 
             _phpSessionId = await RetrieveSessionIdAsync();
+            if (string.IsNullOrEmpty(_phpSessionId))
+            {
+                Reset();
+                return false;
+            }
 
             var request = CreateRequest(
                 new Uri("https://lk.globusenergo.ru/ajax/auth.php"),
@@ -53,6 +58,7 @@ namespace MyFlat.Services
             {
                 _messenger.ShowError(
                     $"Глобус вернул код ошибки {response?.StatusCode.ToString()}");
+                Reset();
                 return false;
             }
 
@@ -85,13 +91,28 @@ namespace MyFlat.Services
 
         private async Task<string> RetrieveSessionIdAsync()
         {
-            var container = new CookieContainer();
-            var uri = new Uri("https://lk.globusenergo.ru/");
-            using var httpClientHandler = new HttpClientHandler { CookieContainer = container };
-            using var httpClient = new HttpClient(httpClientHandler);
-            await httpClient.GetAsync(uri);
-            var cookies = container.GetCookies(uri).Cast<Cookie>().ToList();
-            return cookies.FirstOrDefault(c => c.Name == "PHPSESSID")?.Value;
+            try
+            {
+                var container = new CookieContainer();
+                var uri = new Uri("https://lk.globusenergo.ru/");
+                using var httpClientHandler = new HttpClientHandler { CookieContainer = container };
+                // Disable sertificate checking due to problems with Let’s Encrypt sertificates
+                httpClientHandler.ServerCertificateCustomValidationCallback +=
+                    (sender, cert, chain, sslPolicyErrors) => true;
+                using var httpClient = new HttpClient(httpClientHandler);
+                await httpClient.GetAsync(uri);
+                var cookies = container.GetCookies(uri).Cast<Cookie>().ToList();
+                var result = cookies?.FirstOrDefault(c => c.Name == "PHPSESSID")?.Value;
+                if (string.IsNullOrEmpty(result))
+                    _messenger.ShowError("Глобус: ошибка при получении SessionId");
+
+                return result;
+            }
+            catch (HttpRequestException e)
+            {
+                _messenger.ShowError("Глобус: ошибка при получении SessionId: " + e.Message);
+                return null;
+            }
         }
 
         private void Reset()

@@ -313,6 +313,8 @@ namespace MyFlat
 
         private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Allow closing if even there are validation errors
+            e.Cancel = false;
             errorProvider.Clear();
 
             if (_mosOblEircService.IsAuthorized)
