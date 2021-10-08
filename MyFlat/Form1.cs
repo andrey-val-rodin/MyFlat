@@ -86,6 +86,9 @@ namespace MyFlat
                 labelMosOblEircCount.Text = "Оплачено";
                 labelMosOblEircCount.ForeColor = Color.FromName("DimGray");
             }
+
+            // Force label to redraw immediately
+            labelMosOblEircCount.Update();
         }
 
         private async Task ProcessMetersAsync()
@@ -144,6 +147,13 @@ namespace MyFlat
                 labelElectricityOld.Text = string.Empty;
                 return false;
             }
+
+            // Force labels to redraw immediately
+            labelKitchenColdWaterOld.Update();
+            labelKitchenHotWaterOld.Update();
+            labelBathroomColdWaterOld.Update();
+            labelBathroomHotWaterOld.Update();
+            labelElectricityOld.Update();
 
             return true;
         }
