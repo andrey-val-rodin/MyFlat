@@ -96,7 +96,7 @@ namespace MyFlat.Services
                 var container = new CookieContainer();
                 var uri = new Uri("https://lk.globusenergo.ru/");
                 using var httpClientHandler = new HttpClientHandler { CookieContainer = container };
-                // Disable sertificate checking due to problems with Let’s Encrypt sertificates
+                // Disable certificate checking due to problems with Let’s Encrypt certificates
                 httpClientHandler.ServerCertificateCustomValidationCallback +=
                     (sender, cert, chain, sslPolicyErrors) => true;
                 using var httpClient = new HttpClient(httpClientHandler);
