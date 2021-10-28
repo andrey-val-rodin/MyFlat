@@ -52,12 +52,14 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<AuthorizationDto>(content);
-            var data = result.Data.FirstOrDefault();
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<AuthorizationDto>(content);
+            var data = result?.Data?.FirstOrDefault();
             if (data == null || data.Nm_result != "Ошибок нет")
             {
-                _messenger.ShowError("МосОблЕирц:" + data.Nm_result);
+                _messenger.ShowError(string.IsNullOrEmpty(data?.Nm_result)
+                    ? "МосОблЕирц: ошибка авторизации"
+                    : "МосОблЕирц: " + data?.Nm_result);
                 return false;
             }
 
@@ -66,6 +68,21 @@ namespace MyFlat.Services
                 _sessionId = null;
 
             return IsAuthorized;
+        }
+
+        private T Deserialize<T>(string source) where T: class
+        {
+            if (string.IsNullOrEmpty(source))
+                return null;
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(source);
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
         }
 
         private async Task<bool> RetrieveAccountInfoAsync()
@@ -84,19 +101,24 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<AccountDto>(content);
-            var data = result.Data.FirstOrDefault();
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<AccountDto>(content);
+            var data = result?.Data?.FirstOrDefault();
             if (!result.Success || data == null)
             {
                 _messenger.ShowError(
-                    $"МосОблЕирц: ошибка при получении учётной записи");
+                    $"МосОблЕирц: ошибка при получении данных учётной записи");
             }
 
             _accountId = data.Id_service;
-            var abonent = JsonConvert.DeserializeObject<AbonentDto>(data.Vl_provider);
-            _abonentId = abonent.Id_abonent;
+            var abonent = Deserialize<AbonentDto>(data.Vl_provider);
+            if (abonent == null)
+            {
+                _messenger.ShowError(
+                    $"МосОблЕирц: ошибка при получении данных учётной записи");
+            }
 
+            _abonentId = abonent.Id_abonent;
             return true;
         }
 
@@ -118,12 +140,14 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<AuthorizationDto>(content);
-            var data = result.Data.FirstOrDefault();
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<AuthorizationDto>(content);
+            var data = result?.Data?.FirstOrDefault();
             if (data == null || data.Nm_result != "Ошибок нет")
             {
-                _messenger.ShowError(data.Nm_result);
+                _messenger.ShowError(string.IsNullOrEmpty(data?.Nm_result)
+                    ? "МосОблЕирц: ошибка при выходе из кабинета"
+                    : "МосОблЕирц: " + data?.Nm_result);
                 return false;
             }
 
@@ -194,8 +218,8 @@ namespace MyFlat.Services
                 return null;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<BalanceDto>(content);
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<BalanceDto>(content);
             if (result == null || !result.Success)
             {
                 _messenger.ShowError("Ошибка при попытке получить баланс из МосОблЕирц");
@@ -233,8 +257,8 @@ namespace MyFlat.Services
                 return null;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<MeterDto>(content);
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<MeterDto>(content);
             if (result?.Data?.Count == 0)
             {
                 _messenger.ShowError(
@@ -264,8 +288,8 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<AuthorizationDto>(content);
+            var content = await response.Content?.ReadAsStringAsync();
+            var result = Deserialize<AuthorizationDto>(content);
             if (result?.Success != true ||
                 result.Data?.FirstOrDefault()?.Nm_result != "Показания успешно переданы")
             {

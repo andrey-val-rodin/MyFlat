@@ -96,9 +96,6 @@ namespace MyFlat.Services
                 var container = new CookieContainer();
                 var uri = new Uri("https://lk.globusenergo.ru/");
                 using var httpClientHandler = new HttpClientHandler { CookieContainer = container };
-                // Disable certificate checking due to problems with Let’s Encrypt certificates
-                httpClientHandler.ServerCertificateCustomValidationCallback +=
-                    (sender, cert, chain, sslPolicyErrors) => true;
                 using var httpClient = new HttpClient(httpClientHandler);
                 await httpClient.GetAsync(uri);
                 var cookies = container.GetCookies(uri).Cast<Cookie>().ToList();
@@ -207,8 +204,8 @@ namespace MyFlat.Services
                 return null;
             }
 
-            var html = await response.Content.ReadAsStringAsync();
-            if (!HtmlParser.TryGetBalance(html, out decimal result))
+            var html = await response.Content?.ReadAsStringAsync();
+            if (html == null || !HtmlParser.TryGetBalance(html, out decimal result))
             {
                 _messenger.ShowError("Ошибка при получении баланса из Глобуса");
                 return null;
@@ -235,8 +232,8 @@ namespace MyFlat.Services
                 return false;
             }
 
-            var html = await response.Content.ReadAsStringAsync();
-            if (html.Contains("errortext") ||
+            var html = await response.Content?.ReadAsStringAsync();
+            if (html == null || html.Contains("errortext") ||
                 Regex.Matches(html, "Показания сохранены").Count != 2)
             {
                 _messenger.ShowError(
