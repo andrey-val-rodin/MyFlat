@@ -148,7 +148,7 @@ namespace MyFlat.Services
             {
                 response = await _httpClient.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 _messenger.ShowError(e.Message);
             }
