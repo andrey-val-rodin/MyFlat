@@ -227,10 +227,10 @@ namespace MyFlat.Services
             }
 
             var child = result.Data?.FirstOrDefault();
-            if (child == null)
+            if (child == null || string.IsNullOrEmpty(child.Dt_period_balance))
             {
                 _messenger.ShowError(
-                    "Ошибка при попытке получить баланс из МосОблЕирц. Похоже, структура данных ответа изменилась");
+                    "Ошибка при попытке получить баланс из МосОблЕирц");
                 return null;
             }
 
