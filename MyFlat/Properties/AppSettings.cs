@@ -13,7 +13,7 @@
         public bool UpdateAndCheckNecessityToDisplay(decimal globusInvoice)
         {
             bool result;
-            if (globusInvoice == 0)
+            if (globusInvoice <= 0)
             {
                 _physicalSettings.Reset();
                 result = false;
