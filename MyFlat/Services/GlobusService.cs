@@ -234,7 +234,7 @@ namespace MyFlat.Services
 
             var html = await response.Content?.ReadAsStringAsync();
             if (html == null || html.Contains("errortext") ||
-                Regex.Matches(html, "Показания сохранены").Count != 2)
+                Regex.Matches(html, "Показания переданы").Count == 0)
             {
                 _messenger.ShowError(
                     $"Ошибка во время передачи показаний в Глобус");
