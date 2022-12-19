@@ -15,7 +15,7 @@ namespace MyFlat.Services
     public class MosOblEircService
     {
         private readonly IMessenger _messenger;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient;
         private string _sessionId;
         private int _accountId;
         private int _abonentId;
@@ -31,6 +31,11 @@ namespace MyFlat.Services
         public MosOblEircService(IMessenger messenger)
         {
             _messenger = messenger;
+            var handler = new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+            _httpClient = new HttpClient(handler);
         }
 
         public async Task<bool> AuthorizeAsync(string login, string password)
