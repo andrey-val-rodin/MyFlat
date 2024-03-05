@@ -169,8 +169,8 @@ namespace MyFlat.Services
                     $"МосОблЕирц: ошибка при получении данных учётной записи");
                 return false;
             }
-
             _abonentId = abonent.Id_abonent;
+
             return true;
         }
 
@@ -266,7 +266,7 @@ namespace MyFlat.Services
 
             var content = await response.Content?.ReadAsStringAsync();
             var result = Deserialize<MeterDto>(content);
-            if (result?.Data?.Count == 0)
+            if (result?.Data == null || result.Data.Count == 0)
             {
                 _messenger.ShowError(
                     "Ошибка при попытке получить показания счётчиков из личного кабинета");
