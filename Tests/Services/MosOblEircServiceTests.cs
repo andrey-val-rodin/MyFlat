@@ -55,16 +55,17 @@ namespace Tests.Services
 
             Assert.NotNull(meters);
             Assert.True(meters.Count == 5);
-            // Kitchen cold water   323381, 17523577
-            Assert.Contains(meters, m => m.Id_counter == 17523577);
-            // Kitchen hot water    206922, 16702145
-            Assert.Contains(meters, m => m.Id_counter == 16702145);
-            // Bathroom cold water  323391, 17523578
-            Assert.Contains(meters, m => m.Id_counter == 17523578);
-            // Bathroom hot water   204933, 16702144
-            Assert.Contains(meters, m => m.Id_counter == 16702144);
-            // Electricity          19843385, 14680903
-            Assert.Contains(meters, m => m.Id_counter == 14680903);
+
+            // Kitchen cold water   323381
+            Assert.Contains(meters, m => m.Nm_counter == "323381");
+            // Kitchen hot water    206922
+            Assert.Contains(meters, m => m.Nm_counter == "206922");
+            // Bathroom cold water   323391 (на самом деле - 323392, ошиблись в ћосќбл≈»–÷)
+            Assert.Contains(meters, m => m.Nm_counter == "323391");
+            // Bathroom hot water   204933
+            Assert.Contains(meters, m => m.Nm_counter == "204933");
+            // Electricity          19843385
+            Assert.Contains(meters, m => m.Nm_counter == "19843385");
 
             await service.LogoffAsync();
         }

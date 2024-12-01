@@ -182,6 +182,7 @@ namespace MyFlat.Services
             request.Headers.Add("Referer", referrer);
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Cookie", $"PHPSESSID={_phpSessionId}; BITRIX_SM_GUEST_ID=115872; BITRIX_SM_LAST_VISIT=02.08.2021+12%3A11%3A09; BITRIX_CONVERSION_CONTEXT_s1=%7B%22ID%22%3A8%2C%22EXPIRE%22%3A1627937940%2C%22UNIQUE%22%3A%5B%22conversion_visit_day%22%5D%7D; BX_USER_ID=02c28ee84de81190c66c50093df21db8");
+            request.Headers.AcceptEncoding.Clear();
 
             return request;
         }
