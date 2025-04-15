@@ -161,7 +161,7 @@ namespace MyFlat
         private void EnableMeterCotrols()
         {
             var now = DateTime.Now;
-            if (now.Day >= 1 && now.Day <= 25)
+            if (now.Day >= 5 && now.Day <= 25)
             {
                 textBoxKitchenColdWater.Enabled = KitchenColdWater?.GetDate().Month != now.Month;
                 textBoxKitchenHotWater.Enabled = KitchenHotWater?.GetDate().Month != now.Month;
