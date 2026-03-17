@@ -11,23 +11,23 @@ namespace Tests.Common
 	<head>
 		<meta name=""viewport"" content=""width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"">
 		<meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"">
-<meta name=""keywords"" content=""жкх управляющая компания коммунальные услуги капитальный ремонт"">
-<meta name=""description"" content=""Мы поставляем отопление и ГВС в жилые дома и коммерческую недвижимость."">
+<meta name=""keywords"" content=""пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"">
+<meta name=""description"" content=""пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ."">
         <div class=""personal-account__title-debt"">
-            Задолженность по счету        </div>
+            пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ        </div>
         <div class=""personal-account__debt"">
-            <span v-if=""arrayResult.DEBT"">{{arrayResult.DEBT.DEBT_END}} руб.</span>
-            <span v-else="""">0.00 руб.</span>
+            <span v-if=""arrayResult.DEBT"">{{arrayResult.DEBT.DEBT_END}} пїЅпїЅпїЅ.</span>
+            <span v-else="""">0.00 пїЅпїЅпїЅ.</span>
         </div>
         <div class=""personal-account__title-address"">
-            Адреc        </div>
+            пїЅпїЅпїЅпїЅc        </div>
         <div class=""personal-account__address"">
             {{arrayResult.CURRENT.ADDRESS}}
         </div>
         <div class=""personal-account__pay-button"">
             <a href=""/personal/payment/"">
                 <button class=""form-variable__button form-variable__saved link-theme-default"">
-                    Оплатить                </button>
+                    пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                </button>
             </a>
         </div>
     </div>
